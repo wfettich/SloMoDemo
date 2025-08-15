@@ -47,20 +47,33 @@
                                     <color key="baseForegroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </buttonConfiguration>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wD8-zH-thK">
-                                <rect key="frame" x="248" y="436" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="eKn-7A-ULd">
                                 <rect key="frame" x="18" y="323" width="239" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="235" id="yRY-My-Pn3"/>
                                 </constraints>
                             </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b72-WP-ZqX">
-                                <rect key="frame" x="20" y="360" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frame rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b72-WP-ZqX">
+                                <rect key="frame" x="20" y="360" width="82.333333333333329" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="g1f-2J-fa2">
+                                <rect key="frame" x="20" y="418" width="131" height="32"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                            </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Stabilization Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaR-u3-n2l">
+                                <rect key="frame" x="20" y="457" width="146" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wD8-zH-thK">
+                                <rect key="frame" x="20" y="389" width="357" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -70,21 +83,25 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="rvf-dc-zt0" firstAttribute="bottom" secondItem="5Aq-vp-Ifo" secondAttribute="bottom" constant="17" id="0Ff-6f-wbo"/>
-                            <constraint firstItem="NrK-Av-xAS" firstAttribute="top" secondItem="wD8-zH-thK" secondAttribute="bottom" constant="60" id="3sg-se-Yql"/>
                             <constraint firstItem="b72-WP-ZqX" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="5hc-TE-VHz"/>
                             <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="S9j-aR-gzq" secondAttribute="trailing" constant="20" id="7Co-fF-Rqr"/>
+                            <constraint firstItem="wD8-zH-thK" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="9TO-WO-mlD"/>
                             <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="S4i-eL-vpN" secondAttribute="trailing" constant="30.666666666666629" id="C5q-Y5-IpN"/>
                             <constraint firstItem="S9j-aR-gzq" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="Cdf-ej-Ajh"/>
+                            <constraint firstItem="wD8-zH-thK" firstAttribute="top" secondItem="b72-WP-ZqX" secondAttribute="bottom" constant="8" symbolic="YES" id="IJM-Uu-LSY"/>
+                            <constraint firstItem="g1f-2J-fa2" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="Io7-gq-YsO"/>
+                            <constraint firstItem="g1f-2J-fa2" firstAttribute="top" secondItem="wD8-zH-thK" secondAttribute="bottom" constant="8" symbolic="YES" id="Iv7-U8-BeK"/>
                             <constraint firstItem="b72-WP-ZqX" firstAttribute="top" secondItem="S4i-eL-vpN" secondAttribute="bottom" constant="2" id="Q1Z-lQ-7k0"/>
                             <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="5Aq-vp-Ifo" secondAttribute="trailing" constant="20" id="Qn3-0a-X4d"/>
+                            <constraint firstItem="jaR-u3-n2l" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="Sh9-6Q-8Co"/>
                             <constraint firstItem="eKn-7A-ULd" firstAttribute="top" secondItem="S9j-aR-gzq" secondAttribute="bottom" constant="8" symbolic="YES" id="UPd-wb-MKH"/>
                             <constraint firstItem="S9j-aR-gzq" firstAttribute="top" secondItem="rvf-dc-zt0" secondAttribute="top" id="WLX-Ir-sJg"/>
                             <constraint firstItem="5Aq-vp-Ifo" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="WNK-vB-3y4"/>
                             <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="NrK-Av-xAS" secondAttribute="trailing" constant="103.67" id="cZx-da-zgr"/>
                             <constraint firstItem="eKn-7A-ULd" firstAttribute="leading" secondItem="rvf-dc-zt0" secondAttribute="leading" constant="20" id="jKn-2d-S7F"/>
                             <constraint firstItem="S4i-eL-vpN" firstAttribute="top" secondItem="S9j-aR-gzq" secondAttribute="bottom" constant="8" symbolic="YES" id="jY5-pM-1T5"/>
-                            <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="wD8-zH-thK" secondAttribute="trailing" constant="103" id="loA-z7-7Gn"/>
-                            <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="wD8-zH-thK" secondAttribute="trailing" constant="103" id="toc-mh-M1f"/>
+                            <constraint firstItem="rvf-dc-zt0" firstAttribute="trailing" secondItem="wD8-zH-thK" secondAttribute="trailing" constant="16" id="nhl-bX-pEF"/>
+                            <constraint firstItem="jaR-u3-n2l" firstAttribute="top" secondItem="g1f-2J-fa2" secondAttribute="bottom" constant="8" symbolic="YES" id="rWx-bH-0yf"/>
                             <constraint firstItem="5Aq-vp-Ifo" firstAttribute="top" secondItem="NrK-Av-xAS" secondAttribute="bottom" constant="18" id="uZM-Wc-SSa"/>
                         </constraints>
                     </view>
@@ -95,6 +112,8 @@
                         <outlet property="playbackButton" destination="NrK-Av-xAS" id="lAP-VA-3LJ"/>
                         <outlet property="playbackView" destination="5Aq-vp-Ifo" id="8ri-dZ-JwX"/>
                         <outlet property="recordButton" destination="S4i-eL-vpN" id="vOo-4D-xzK"/>
+                        <outlet property="stabilizationSegmentedControl" destination="g1f-2J-fa2" id="QOq-98-S1J"/>
+                        <outlet property="stabilizationStatusLabel" destination="jaR-u3-n2l" id="swY-BP-iFM"/>
                         <outlet property="statusLabel" destination="wD8-zH-thK" id="1tl-Cx-gGz"/>
                     </connections>
                 </viewController>
@@ -108,7 +127,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBrownColor">
-            <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.63529411759999999" green="0.51764705879999995" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

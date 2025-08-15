@@ -12,6 +12,8 @@ class SlowMotionCameraViewController: UIViewController {
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var playbackView: UIView!
     @IBOutlet weak var playbackButton: UIButton!
+    @IBOutlet weak var stabilizationSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var stabilizationStatusLabel: UILabel!
     
     // MARK: - AVFoundation Properties
     private var captureSession: AVCaptureSession!
@@ -24,6 +26,7 @@ class SlowMotionCameraViewController: UIViewController {
     private var isRecording = false
     private var recordedVideoURL: URL?
     private var selectedFrameRate: Float64 = 240.0
+    private var currentStabilizationMode: AVCaptureVideoStabilizationMode = .auto
     
     // MARK: - Playback Properties
     private var player: AVPlayer?
@@ -65,6 +68,17 @@ class SlowMotionCameraViewController: UIViewController {
         playbackButton.layer.cornerRadius = 10
         playbackButton.addTarget(self, action: #selector(playbackButtonTapped), for: .touchUpInside)
         playbackButton.isEnabled = false
+        
+        // Stabilization control setup
+        stabilizationSegmentedControl.removeAllSegments()
+        stabilizationSegmentedControl.insertSegment(withTitle: "Off", at: 0, animated: false)
+        stabilizationSegmentedControl.insertSegment(withTitle: "Standard", at: 1, animated: false)
+        stabilizationSegmentedControl.insertSegment(withTitle: "Cinematic", at: 2, animated: false)
+        stabilizationSegmentedControl.insertSegment(withTitle: "Auto", at: 3, animated: false)
+        stabilizationSegmentedControl.selectedSegmentIndex = 3 // Default to Auto
+        stabilizationSegmentedControl.addTarget(self, action: #selector(stabilizationModeChanged), for: .valueChanged)
+        
+        updateStabilizationStatus()
         
         updateFrameRateLabel()
         statusLabel.text = "Ready to record"
@@ -113,8 +127,9 @@ class SlowMotionCameraViewController: UIViewController {
             previewLayer.videoGravity = .resizeAspectFill
             cameraPreviewView.layer.addSublayer(previewLayer)
             
-            // Configure initial frame rate
+            // Configure initial frame rate and stabilization
             configureFrameRate(selectedFrameRate)
+            configureVideoStabilization()
             
         } catch {
             showAlert(title: "Error", message: "Unable to create video device input: \(error.localizedDescription)")
@@ -166,6 +181,105 @@ class SlowMotionCameraViewController: UIViewController {
         }
         
         return bestFormat
+    }
+    
+    private func configureVideoStabilization() {
+        guard let movieFileOutput = movieFileOutput else { return }
+        
+        // Get the video connection
+        guard let videoConnection = movieFileOutput.connection(with: .video) else {
+            print("No video connection found")
+            return
+        }
+        
+        // Check if stabilization is supported
+        if videoConnection.isVideoStabilizationSupported {
+            // Check which stabilization modes are supported
+            let supportedModes = getSupportedStabilizationModes(for: videoConnection)
+            let modeNames = supportedModes.map {
+                switch $0 {
+                case .off: "off";
+                case .standard: "standard";
+                case .cinematic: "cinematic";
+                case .cinematicExtended: "cinematicExtended";
+                case .previewOptimized: "previewOptimized";
+                case .cinematicExtendedEnhanced: "cinematicExtendedEnhanced";
+                case .auto: "auto";
+                default: "unknown"
+                }
+            }
+            print("Supported stabilization modes: \(modeNames)")
+            
+            // Set the preferred stabilization mode
+            if supportedModes.contains(currentStabilizationMode) {
+                videoConnection.preferredVideoStabilizationMode = currentStabilizationMode
+                print("Set stabilization mode to: \(stabilizationModeString(currentStabilizationMode))")
+            } else {
+                // Fallback to the best available mode
+                let fallbackMode = selectBestAvailableStabilizationMode(from: supportedModes)
+                videoConnection.preferredVideoStabilizationMode = fallbackMode
+                currentStabilizationMode = fallbackMode
+                print("Fallback to stabilization mode: \(stabilizationModeString(fallbackMode))")
+            }
+            
+            updateStabilizationStatus()
+        } else {
+            print("Video stabilization not supported on this device")
+            stabilizationStatusLabel.text = "Stabilization: Not supported"
+        }
+    }
+    
+    private func getSupportedStabilizationModes(for connection: AVCaptureConnection) -> [AVCaptureVideoStabilizationMode] {
+        var supportedModes: [AVCaptureVideoStabilizationMode] = []
+        
+        // Test each mode
+        let allModes: [AVCaptureVideoStabilizationMode] = [.off, .standard, .cinematic, .auto]
+        
+        for mode in allModes {
+            let originalMode = connection.preferredVideoStabilizationMode
+            connection.preferredVideoStabilizationMode = mode
+            
+            if connection.activeVideoStabilizationMode == mode || mode == .off {
+                supportedModes.append(mode)
+            }
+            
+            // Restore original mode
+            connection.preferredVideoStabilizationMode = originalMode
+        }
+        
+        return supportedModes
+    }
+    
+    private func selectBestAvailableStabilizationMode(from modes: [AVCaptureVideoStabilizationMode]) -> AVCaptureVideoStabilizationMode {
+        // Priority order: cinematic > auto > standard > off
+        if modes.contains(.cinematic) { return .cinematic }
+        if modes.contains(.auto) { return .auto }
+        if modes.contains(.standard) { return .standard }
+        return .off
+    }
+    
+    private func stabilizationModeString(_ mode: AVCaptureVideoStabilizationMode) -> String {
+        switch mode {
+        case .off: return "Off"
+        case .standard: return "Standard"
+        case .cinematic: return "Cinematic"
+        case .auto: return "Auto"
+        @unknown default: return "Unknown"
+        }
+    }
+    
+    private func updateStabilizationStatus() {
+        let modeString = stabilizationModeString(currentStabilizationMode)
+        stabilizationStatusLabel.text = "Stabilization: \(modeString)"
+        
+        // Update segmented control to match current mode
+        switch currentStabilizationMode {
+        case .off: stabilizationSegmentedControl.selectedSegmentIndex = 0
+        case .standard: stabilizationSegmentedControl.selectedSegmentIndex = 1
+        case .cinematic: stabilizationSegmentedControl.selectedSegmentIndex = 2
+        case .auto: stabilizationSegmentedControl.selectedSegmentIndex = 3
+        @unknown default: break
+        }
     }
     
     // MARK: - Permissions
@@ -240,6 +354,46 @@ class SlowMotionCameraViewController: UIViewController {
         
         updateFrameRateLabel()
         configureFrameRate(selectedFrameRate)
+        configureVideoStabilization() // Reconfigure stabilization after frame rate change
+    }
+    
+    @objc private func stabilizationModeChanged() {
+        let selectedIndex = stabilizationSegmentedControl.selectedSegmentIndex
+        
+        switch selectedIndex {
+        case 0: currentStabilizationMode = .off
+        case 1: currentStabilizationMode = .standard
+        case 2: currentStabilizationMode = .cinematic
+        case 3: currentStabilizationMode = .auto
+        default: currentStabilizationMode = .auto
+        }
+        
+        configureVideoStabilization()
+        
+        // Provide user feedback about stabilization capabilities
+        if !isRecording {
+            checkStabilizationCompatibility()
+        }
+    }
+    
+    private func checkStabilizationCompatibility() {
+        guard let movieFileOutput = movieFileOutput,
+              let videoConnection = movieFileOutput.connection(with: .video) else { return }
+        
+        if !videoConnection.isVideoStabilizationSupported {
+            showAlert(title: "Stabilization Not Available",
+                     message: "Video stabilization is not supported on this device or current configuration.")
+            return
+        }
+        
+        // Check if current mode works with current frame rate
+        let supportedModes = getSupportedStabilizationModes(for: videoConnection)
+        
+        if !supportedModes.contains(currentStabilizationMode) {
+            let availableModes = supportedModes.map { stabilizationModeString($0) }.joined(separator: ", ")
+            showAlert(title: "Stabilization Mode Unavailable",
+                     message: "The selected stabilization mode is not available at \(Int(selectedFrameRate)) fps. Available modes: \(availableModes)")
+        }
     }
     
     private func updateFrameRateLabel() {
